@@ -1,7 +1,7 @@
 <h3>Please Enter Your Degree Infromation</h3>
 <p>This page is a standard submit form. It is designed for user generated input.
-You will be redirected to the <a href="index.php?source=display_db">DISPLAY</a> page.
-Check for your input there.</p>
+After submitting your information you will be redirected to the
+<a href="index.php?source=display_db">DISPLAY</a> page where you can check for your data.</p>
 
   <form class="degree-form" action="includes/functions.php" method="post">
 

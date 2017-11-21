@@ -46,14 +46,15 @@ margin-left: 25%;
 
 li{
   border-right: 1px solid #45382B;
+
 }
 
 ul li a{
     margin: 5px 10px;
+    text-decoration: none;
 }
 
 ul li, a {
-  text-decoration: none;
   display: inline-block;
   font-family: 'Lato', sans-serif;
   color: #45382B;
@@ -119,6 +120,7 @@ label {
   font-size: 1rem;
   width: 30%;
   max-width: 300px;
+  text-decoration: none;
 }
 
 footer {
@@ -169,5 +171,5 @@ table {
 
 table td {
   border-bottom: 1px solid black;
-
+  text-align: center;
 }

@@ -9,7 +9,6 @@ require "db/db.php";
 
 
 
-
   /****************************Helper functions*********************************/
 
 //this is quicker to type. the function prevents Xsite scripting by handling html characters safely
@@ -99,8 +98,8 @@ curl_setopt($ch, CURLOPT_URL, $url);
 
 $data = curl_exec($ch);
 curl_close ($ch);
-
-var_dump($data);
+$xml = fopen('degrees.xml', 'w');
+fwrite($xml, $data);
 
 }
 
@@ -182,8 +181,12 @@ if(isset($_GET['xml'])){
 /********************************Dump DB Functions*******************************************/
 
 if(isset($_GET['dump'])){
+    global $connection;
 
-
+  $sql = "TRUNCATE TABLE degree";
+  $result = mysqli_query($connection, $sql);
+  confirm($result);
+  header("Location: ../index.php?source=dump_db");
 }
 
  ?>
