@@ -17,7 +17,7 @@
         <li><a href="index.php">FORM</a></li>
         <li><a href="index.php?source=display_db">DISPLAY THE DB</a></li>
         <li><a href="index.php?source=dump_db">DUMP THE DB</a></li>
-        <li><a href="index.php?source=read_feed">READ THE FEED</a></li>
+        <li><a href="index.php?source=read_feed">THE FEED</a></li>
       </ul>
     </div>
   </header>

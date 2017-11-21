@@ -11,14 +11,14 @@ require "db/db.php";
 
   /****************************Helper functions*********************************/
 
-//this is quicker to type. the function prevents Xsite scripting by handling html characters safely
+//this function prevents Xsite scripting by handling html characters safely
 function clean($string){
 
     return htmlentities($string);
 
   }
 
-//quicker to tuype. this function will disable SQL injection by handling any not allowing SQL queries into
+//this function will disable SQL injection by not allowing SQL queries into
 //the db by user input
   function escape($string){
 
@@ -26,6 +26,7 @@ function clean($string){
   return mysqli_real_escape_string($connection, $string);
 
   }
+
 
 //this is to hide all error messages from being displayed
 function confirm($result) {
@@ -36,14 +37,14 @@ function confirm($result) {
     }
   }
 
+
 /*this function generates a random token upon every click of the submit button.
 this is done to partly for security; it would be very difficult for any software
 to mimic the unique token.
 
 This is also why it is simultaneously stored in a session (or alterantively as a cookie). In a larger
-application this value can be stored in the db validate
+application this value can be stored in the db and used as email or general validation
 
-it can also be used for id purposes, generally.
 */
   function token_generator(){
 
@@ -57,20 +58,22 @@ it can also be used for id purposes, generally.
 
 
 
-  if (isset($_POST['submit'])){
-
+  if (isset($_POST['submit'])){//when the submit button is pushed
+//these use the helper functions above to sanitize the data before putting it in the db
     $bp           = escape(clean($_POST['bp']));
     $dp           = escape(clean($_POST['dp']));
     $id           = escape(clean($_POST['id']));
-    $letter       = escape(clean($_POST['letter']));//at this point the variable should always be empty.
+    $letter       = escape(clean($_POST['letter']));//the variable should always be empty since the element is hidden.
                                                     //since it comes from an HTML element... better safe than sorry.
     $link         = escape(clean($_POST['link']));
     $mp           = escape(clean($_POST['mp']));
     $name         = escape(clean($_POST['name']));
     $school       = escape(clean($_POST['school']));
 
+      
+    //This function reduces user error and automates monotonous typing
     $first = substr($school, 0, 1);//find the first letter of the school input field data
-    $letter = strtoupper($first);//capitalize the letter. save it as variable to be put
+    $letter = strtoupper($first);//capitalize the letter. save it as variable
 
     $qry = "INSERT INTO degree( bp, dp, id, letter, link, mp, name, school)
             VALUES ('$bp', '$dp', '$id', '$letter', '$link', '$mp', '$name', '$school')";
@@ -88,25 +91,31 @@ it can also be used for id purposes, generally.
 
 /*********************************Read XML Feed Function***********************************/
 
+/*
+This was going to be an automatic xml feed reader. It is somewhat functioning. It will go and get the feed, put it into a file and add the reference to the stylesheet. However, no matter how I tried to finesse
+it, "<?xml version="1.0" encoding="utf-8" ?>" was always placed after "<?xml-stylesheet type="text/xsl" href="degrees.xslt" ?>". Having a deadline, I implemented other functionality.
 
-if(isset($_GET['read'])){
+The function below is a general version out of nearly 100 I tried to give some hint at my thought process. Ultimately, I rolled back the functionality to just link to the already completed XML/XSLT sheet.
+*/
 
-$url = "http://www.iu.edu/~iubweb/academic/majors/xml/degree-list.xml";
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($ch, CURLOPT_URL, $url);
+if(isset($_GET['read'])){//read the parameter sent by the link
 
-$data = curl_exec($ch);
-curl_close ($ch);
-$xml = fopen('degrees.xml', 'w');
-fwrite($xml, $data);
+$url = "http://www.iu.edu/~iubweb/academic/majors/xml/degree-list.xml";//store the url
+$ch = curl_init();//this is the cURL initializer
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);// give the return value as a string
+curl_setopt($ch, CURLOPT_URL, $url);// sets the url to fetch
+
+$data = curl_exec($ch);// execute and store in a variable
+curl_close ($ch);// end the cURL connection    
+$xml = fopen('degrees.xml', 'r+'); //create a new XML file    
+fwrite($xml, '<?xml-stylesheet type="text/xsl" href="degrees.xslt" ?>'); // add the stylesheet reference
+fwrite($xml, $data);// add the data
+    
+
+header('Location:degrees.xml');//take the user to the page
 
 }
 
-/*
-$query = "INSERT INTO 'degrees'('user_id', 'bp', 'dp', 'id', 'letter', 'link', 'mp', 'name', 'school')
-          VALUES ('$user_id', '$bp', '$dp', '$id', '$letter', '$link', '$mp', '$name', '$school')";
-*/
 /********************************Display DB Funcitons***************************************/
 
 function html_display(){
@@ -168,25 +177,15 @@ echo $html_display;
 }//closes the function
 
 
-function xml_display(){
-
-if(isset($_GET['xml'])){
-
-
-
-  }
-
-}
-
 /********************************Dump DB Functions*******************************************/
 
 if(isset($_GET['dump'])){
     global $connection;
 
-  $sql = "TRUNCATE TABLE degree";
+  $sql = "TRUNCATE TABLE degree";//this deletes and resets the table. Faster than deleting rows
   $result = mysqli_query($connection, $sql);
   confirm($result);
-  header("Location: ../index.php?source=dump_db");
+  header("Location: ../index.php?source=dump_db");//redirect to the same page
 }
 
  ?>

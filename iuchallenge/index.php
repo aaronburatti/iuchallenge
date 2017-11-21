@@ -2,13 +2,15 @@
   <body>
     <div class="main-wrap">
       <?php
+    
+    /* check for the source attribute in the URL*/
           if(isset($_GET['source'])) {
 
             $source = $_GET['source'];
           } else {
             $source = '';
           }
-
+    /*creates the basis for the SPA experience. Below are the different pages, each with its own function*/
           switch ($source) {
             case 'display_db';
               include 'includes/display.php';
